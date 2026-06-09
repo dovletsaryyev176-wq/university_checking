@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS students (
+    id             INTEGER PRIMARY KEY AUTOINCREMENT,
+    student_number TEXT UNIQUE NOT NULL,
+    first_name     TEXT,
+    last_name      TEXT,
+    book_type      TEXT,
+    direction1     TEXT,
+    direction2     TEXT,
+    direction3     TEXT,
+    direction4     TEXT,
+    turkmen        TEXT,
+    english        TEXT,
+    informatics    TEXT,
+    history        TEXT,
+    jemgyyet       TEXT,
+    economics      TEXT,
+    biology        TEXT,
+    chemistry      TEXT,
+    mathematics    TEXT,
+    physics        TEXT,
+    zehin          TEXT,
+    created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

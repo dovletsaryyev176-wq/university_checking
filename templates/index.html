@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block title %}Итоги тестов{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+    <h4 class="mb-3">Итоги тестов студентов</h4>
+
+    <!-- Upload -->
+    <div class="card mb-3">
+        <div class="card-body py-2">
+            <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
+                  class="row g-2 align-items-center">
+                <div class="col-auto">
+                    <label class="col-form-label fw-semibold">Загрузить файл результатов:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="file" name="file" accept=".txt" class="form-control form-control-sm" required>
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show py-2" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover table-sm align-middle" style="font-size: 0.82rem;">
+            <thead class="table-dark">
+                <tr>
+                    <th>№</th>
+                    <th>Номер</th>
+                    <th>Имя</th>
+                    <th>Фамилия</th>
+                    <th>Книга</th>
+                    <th>Напр. 1</th>
+                    <th>Напр. 2</th>
+                    <th>Напр. 3</th>
+                    <th>Напр. 4</th>
+                    <th>Туркм. яз.</th>
+                    <th>Английский</th>
+                    <th>Информатика</th>
+                    <th>История</th>
+                    <th>Джемгыет</th>
+                    <th>Экономика</th>
+                    <th>Биология</th>
+                    <th>Химия</th>
+                    <th>Математика</th>
+                    <th>Физика</th>
+                    <th>Зехин</th>
+                    <th>Операции</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td class="text-muted">{{ loop.index }}</td>
+                    <td>{{ s.student_number }}</td>
+                    <td>{{ s.first_name }}</td>
+                    <td>{{ s.last_name }}</td>
+                    <td class="text-center">{{ s.book_type }}</td>
+                    <td>{{ s.direction1 }}</td>
+                    <td>{{ s.direction2 }}</td>
+                    <td>{{ s.direction3 }}</td>
+                    <td>{{ s.direction4 }}</td>
+                    <td>{{ s.turkmen }}</td>
+                    <td>{{ s.english }}</td>
+                    <td>{{ s.informatics }}</td>
+                    <td>{{ s.history }}</td>
+                    <td>{{ s.jemgyyet }}</td>
+                    <td>{{ s.economics }}</td>
+                    <td>{{ s.biology }}</td>
+                    <td>{{ s.chemistry }}</td>
+                    <td>{{ s.mathematics }}</td>
+                    <td>{{ s.physics }}</td>
+                    <td>{{ s.zehin }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('delete', student_id=s.id) }}"
+                              onsubmit="return confirm('Удалить студента {{ s.student_number }}?')">
+                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="21" class="text-center text-muted py-3">Нет данных. Загрузите файл.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <small class="text-muted">Всего студентов: {{ students | length }}</small>
+</div>
+{% endblock %}
