@@ -6,21 +6,71 @@
 
     <h4 class="mb-3">Итоги тестов студентов</h4>
 
-    <!-- Upload -->
+    <!-- Answer keys -->
+    <div class="card mb-3">
+        <div class="card-header py-2 fw-semibold">Ключи ответов</div>
+        <div class="card-body py-2">
+            <div class="row g-3">
+                {% for bt in ['A', 'B'] %}
+                <div class="col-auto">
+                    <form method="post" action="{{ url_for('upload_key') }}" enctype="multipart/form-data"
+                          class="row g-2 align-items-center">
+                        <input type="hidden" name="book_type" value="{{ bt }}">
+                        <div class="col-auto">
+                            <span class="fw-semibold">Книга {{ bt }}:</span>
+                            {% if answer_keys.get(bt) %}
+                                <span class="badge bg-success ms-1">Загружен</span>
+                                <small class="text-muted ms-1">{{ answer_keys[bt]['uploaded_at'][:16] }}</small>
+                            {% else %}
+                                <span class="badge bg-secondary ms-1">Не загружен</span>
+                            {% endif %}
+                        </div>
+                        <div class="col-auto">
+                            <input type="file" name="file" accept=".txt" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-outline-primary btn-sm">
+                                {{ 'Заменить' if answer_keys.get(bt) else 'Загрузить' }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload + Compare -->
     <div class="card mb-3">
         <div class="card-body py-2">
-            <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
-                  class="row g-2 align-items-center">
+            <div class="row g-2 align-items-center flex-wrap">
                 <div class="col-auto">
-                    <label class="col-form-label fw-semibold">Загрузить файл результатов:</label>
+                    <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
+                          class="row g-2 align-items-center">
+                        <div class="col-auto">
+                            <label class="col-form-label fw-semibold">Загрузить файл результатов:</label>
+                        </div>
+                        <div class="col-auto">
+                            <input type="file" name="file" accept=".txt" class="form-control form-control-sm" required>
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                        </div>
+                    </form>
+                </div>
+                {% if answer_keys %}
+                <div class="col-auto ms-2">
+                    {% if compare %}
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm">Обычный вид</a>
+                    {% else %}
+                        <a href="{{ url_for('index', compare=1) }}" class="btn btn-success btn-sm">Сравнить ответы</a>
+                    {% endif %}
                 </div>
                 <div class="col-auto">
-                    <input type="file" name="file" accept=".txt" class="form-control form-control-sm" required>
+                    <a href="{{ url_for('export') }}" class="btn btn-outline-success btn-sm">&#8595; Экспорт в Excel</a>
                 </div>
-                <div class="col-auto">
-                    <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
-                </div>
-            </form>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -31,6 +81,24 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
     {% endfor %}
+
+    {% macro answer_cell(d) %}
+    <td class="px-1" style="vertical-align: top;">
+        <div style="font-size: 0.7rem; line-height: 1.5; white-space: nowrap;">
+            <span class="text-success">&#10003; {{ d.correct }}</span>&nbsp;
+            <span class="text-danger">&#10007; {{ d.wrong }}</span>&nbsp;
+            <span class="text-secondary"># {{ d.no_answer }}</span>
+        </div>
+        <div style="font-family: monospace; font-size: 0.78rem; white-space: nowrap; letter-spacing: 0.5px;">
+            {% for char, status in d.chars %}
+                {%- if status == 'correct' -%}<span class="text-success fw-bold">{{ char }}</span>
+                {%- elif status == 'no_answer' -%}<span class="text-secondary">{{ char }}</span>
+                {%- else -%}<span class="text-danger">{{ char }}</span>
+                {%- endif -%}
+            {% endfor %}
+        </div>
+    </td>
+    {% endmacro %}
 
     <!-- Table -->
     <div class="table-responsive">
@@ -57,11 +125,13 @@
                     <th>Математика</th>
                     <th>Физика</th>
                     <th>Зехин</th>
+                    {% if compare %}<th>Итог</th>{% endif %}
                     <th>Операции</th>
                 </tr>
             </thead>
             <tbody>
                 {% for s in students %}
+                {% set cmp = comparison.get(s['id']) %}
                 <tr>
                     <td class="text-muted">{{ loop.index }}</td>
                     <td>{{ s.student_number }}</td>
@@ -72,17 +142,47 @@
                     <td>{{ s.direction2 }}</td>
                     <td>{{ s.direction3 }}</td>
                     <td>{{ s.direction4 }}</td>
-                    <td>{{ s.turkmen }}</td>
-                    <td>{{ s.english }}</td>
-                    <td>{{ s.informatics }}</td>
-                    <td>{{ s.history }}</td>
-                    <td>{{ s.jemgyyet }}</td>
-                    <td>{{ s.economics }}</td>
-                    <td>{{ s.biology }}</td>
-                    <td>{{ s.chemistry }}</td>
-                    <td>{{ s.mathematics }}</td>
-                    <td>{{ s.physics }}</td>
-                    <td>{{ s.zehin }}</td>
+                    {% if cmp %}
+                        {{ answer_cell(cmp['turkmen']) }}
+                        {{ answer_cell(cmp['english']) }}
+                        {{ answer_cell(cmp['informatics']) }}
+                        {{ answer_cell(cmp['history']) }}
+                        {{ answer_cell(cmp['jemgyyet']) }}
+                        {{ answer_cell(cmp['economics']) }}
+                        {{ answer_cell(cmp['biology']) }}
+                        {{ answer_cell(cmp['chemistry']) }}
+                        {{ answer_cell(cmp['mathematics']) }}
+                        {{ answer_cell(cmp['physics']) }}
+                        {{ answer_cell(cmp['zehin']) }}
+                    {% else %}
+                        <td>{{ s.turkmen }}</td>
+                        <td>{{ s.english }}</td>
+                        <td>{{ s.informatics }}</td>
+                        <td>{{ s.history }}</td>
+                        <td>{{ s.jemgyyet }}</td>
+                        <td>{{ s.economics }}</td>
+                        <td>{{ s.biology }}</td>
+                        <td>{{ s.chemistry }}</td>
+                        <td>{{ s.mathematics }}</td>
+                        <td>{{ s.physics }}</td>
+                        <td>{{ s.zehin }}</td>
+                    {% endif %}
+                    {% if compare %}
+                    <td style="white-space: nowrap; vertical-align: middle; text-align: center;">
+                        {% if cmp %}
+                        {% set t = cmp['_total'] %}
+                        <div style="font-size: 0.72rem; line-height: 1.7;">
+                            <span class="text-success">&#10003; {{ t.correct }}</span><br>
+                            <span class="text-danger">&#10007; {{ t.wrong }}</span><br>
+                            <span class="text-secondary"># {{ t.no_answer }}</span>
+                        </div>
+                        <hr class="my-1">
+                        <strong class="text-primary fs-6">{{ t.score }}</strong>
+                        {% else %}
+                        <span class="text-muted fst-italic" style="font-size:0.75rem;">Нет ключа</span>
+                        {% endif %}
+                    </td>
+                    {% endif %}
                     <td>
                         <form method="post" action="{{ url_for('delete', student_id=s.id) }}"
                               onsubmit="return confirm('Удалить студента {{ s.student_number }}?')">
@@ -92,7 +192,7 @@
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="21" class="text-center text-muted py-3">Нет данных. Загрузите файл.</td>
+                    <td colspan="{{ 22 if compare else 21 }}" class="text-center text-muted py-3">Нет данных. Загрузите файл.</td>
                 </tr>
                 {% endfor %}
             </tbody>

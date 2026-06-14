@@ -1,3 +1,52 @@
+CREATE TABLE IF NOT EXISTS answer_keys (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    book_type   TEXT UNIQUE NOT NULL,
+    answers     TEXT NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS results (
+    student_id      INTEGER PRIMARY KEY REFERENCES students(id) ON DELETE CASCADE,
+    turkmen_c       INTEGER NOT NULL DEFAULT 0,
+    turkmen_w       INTEGER NOT NULL DEFAULT 0,
+    turkmen_n       INTEGER NOT NULL DEFAULT 0,
+    english_c       INTEGER NOT NULL DEFAULT 0,
+    english_w       INTEGER NOT NULL DEFAULT 0,
+    english_n       INTEGER NOT NULL DEFAULT 0,
+    informatics_c   INTEGER NOT NULL DEFAULT 0,
+    informatics_w   INTEGER NOT NULL DEFAULT 0,
+    informatics_n   INTEGER NOT NULL DEFAULT 0,
+    history_c       INTEGER NOT NULL DEFAULT 0,
+    history_w       INTEGER NOT NULL DEFAULT 0,
+    history_n       INTEGER NOT NULL DEFAULT 0,
+    jemgyyet_c      INTEGER NOT NULL DEFAULT 0,
+    jemgyyet_w      INTEGER NOT NULL DEFAULT 0,
+    jemgyyet_n      INTEGER NOT NULL DEFAULT 0,
+    economics_c     INTEGER NOT NULL DEFAULT 0,
+    economics_w     INTEGER NOT NULL DEFAULT 0,
+    economics_n     INTEGER NOT NULL DEFAULT 0,
+    biology_c       INTEGER NOT NULL DEFAULT 0,
+    biology_w       INTEGER NOT NULL DEFAULT 0,
+    biology_n       INTEGER NOT NULL DEFAULT 0,
+    chemistry_c     INTEGER NOT NULL DEFAULT 0,
+    chemistry_w     INTEGER NOT NULL DEFAULT 0,
+    chemistry_n     INTEGER NOT NULL DEFAULT 0,
+    mathematics_c   INTEGER NOT NULL DEFAULT 0,
+    mathematics_w   INTEGER NOT NULL DEFAULT 0,
+    mathematics_n   INTEGER NOT NULL DEFAULT 0,
+    physics_c       INTEGER NOT NULL DEFAULT 0,
+    physics_w       INTEGER NOT NULL DEFAULT 0,
+    physics_n       INTEGER NOT NULL DEFAULT 0,
+    zehin_c         INTEGER NOT NULL DEFAULT 0,
+    zehin_w         INTEGER NOT NULL DEFAULT 0,
+    zehin_n         INTEGER NOT NULL DEFAULT 0,
+    total_correct   INTEGER NOT NULL DEFAULT 0,
+    total_wrong     INTEGER NOT NULL DEFAULT 0,
+    total_no_answer INTEGER NOT NULL DEFAULT 0,
+    score           REAL NOT NULL DEFAULT 0,
+    computed_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS students (
     id             INTEGER PRIMARY KEY AUTOINCREMENT,
     student_number TEXT UNIQUE NOT NULL,
