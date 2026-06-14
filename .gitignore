@@ -219,3 +219,10 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Database (создаётся автоматически при запуске)
+database/app.db
+
+# Test answer files
+answers_1.txt
+answers_2.txt
