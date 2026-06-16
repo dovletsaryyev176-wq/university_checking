@@ -1,14 +1,14 @@
 {% extends 'base.html' %}
-{% block title %}Итоги тестов{% endblock %}
+{% block title %}Test netijeleri{% endblock %}
 
 {% block content %}
 <div class="container-fluid py-3">
 
-    <h4 class="mb-3">Итоги тестов студентов</h4>
+    <h4 class="mb-3">Talyplaryň test netijeleri</h4>
 
     <!-- Answer keys -->
     <div class="card mb-3">
-        <div class="card-header py-2 fw-semibold">Ключи ответов</div>
+        <div class="card-header py-2 fw-semibold">Jogap açarlary</div>
         <div class="card-body py-2">
             <div class="row g-3">
                 {% for bt in ['A', 'B'] %}
@@ -17,12 +17,12 @@
                           class="row g-2 align-items-center">
                         <input type="hidden" name="book_type" value="{{ bt }}">
                         <div class="col-auto">
-                            <span class="fw-semibold">Книга {{ bt }}:</span>
+                            <span class="fw-semibold">Kitap {{ bt }}:</span>
                             {% if answer_keys.get(bt) %}
-                                <span class="badge bg-success ms-1">Загружен</span>
+                                <span class="badge bg-success ms-1">Ýüklendi</span>
                                 <small class="text-muted ms-1">{{ answer_keys[bt]['uploaded_at'][:16] }}</small>
                             {% else %}
-                                <span class="badge bg-secondary ms-1">Не загружен</span>
+                                <span class="badge bg-secondary ms-1">Ýüklenmedik</span>
                             {% endif %}
                         </div>
                         <div class="col-auto">
@@ -30,7 +30,7 @@
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-outline-primary btn-sm">
-                                {{ 'Заменить' if answer_keys.get(bt) else 'Загрузить' }}
+                                {{ 'Çalyşmak' if answer_keys.get(bt) else 'Ýüklemek' }}
                             </button>
                         </div>
                     </form>
@@ -48,26 +48,26 @@
                     <form method="post" action="{{ url_for('upload') }}" enctype="multipart/form-data"
                           class="row g-2 align-items-center">
                         <div class="col-auto">
-                            <label class="col-form-label fw-semibold">Загрузить файл результатов:</label>
+                            <label class="col-form-label fw-semibold">Netijeler faýlyny ýüklemek:</label>
                         </div>
                         <div class="col-auto">
                             <input type="file" name="file" accept=".txt" class="form-control form-control-sm" required>
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary btn-sm">Загрузить</button>
+                            <button type="submit" class="btn btn-primary btn-sm">Ýüklemek</button>
                         </div>
                     </form>
                 </div>
                 {% if answer_keys %}
                 <div class="col-auto ms-2">
                     {% if compare %}
-                        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm">Обычный вид</a>
+                        <a href="{{ url_for('index') }}" class="btn btn-secondary btn-sm">Adaty görnüş</a>
                     {% else %}
-                        <a href="{{ url_for('index', compare=1) }}" class="btn btn-success btn-sm">Сравнить ответы</a>
+                        <a href="{{ url_for('index', compare=1) }}" class="btn btn-success btn-sm">Jogaplary deňeşdirmek</a>
                     {% endif %}
                 </div>
                 <div class="col-auto">
-                    <a href="{{ url_for('export') }}" class="btn btn-outline-success btn-sm">&#8595; Экспорт в Excel</a>
+                    <a href="{{ url_for('export') }}" class="btn btn-outline-success btn-sm">&#8595; Excel-e eksport</a>
                 </div>
                 {% endif %}
             </div>
@@ -106,27 +106,27 @@
             <thead class="table-dark">
                 <tr>
                     <th>№</th>
-                    <th>Номер</th>
-                    <th>Имя</th>
-                    <th>Фамилия</th>
-                    <th>Книга</th>
-                    <th>Напр. 1</th>
-                    <th>Напр. 2</th>
-                    <th>Напр. 3</th>
-                    <th>Напр. 4</th>
-                    <th>Туркм. яз.</th>
-                    <th>Английский</th>
-                    <th>Информатика</th>
-                    <th>История</th>
-                    <th>Джемгыет</th>
-                    <th>Экономика</th>
-                    <th>Биология</th>
-                    <th>Химия</th>
-                    <th>Математика</th>
-                    <th>Физика</th>
-                    <th>Зехин</th>
-                    {% if compare %}<th>Итог</th>{% endif %}
-                    <th>Операции</th>
+                    <th>Belgisi</th>
+                    <th>Ady</th>
+                    <th>Familiýasy</th>
+                    <th>Kitap</th>
+                    <th>Ugur 1</th>
+                    <th>Ugur 2</th>
+                    <th>Ugur 3</th>
+                    <th>Ugur 4</th>
+                    <th>Türkmen dili</th>
+                    <th>Iňlis dili</th>
+                    <th>Informatika</th>
+                    <th>Taryh</th>
+                    <th>Jemgyýet</th>
+                    <th>Ykdysadyýet</th>
+                    <th>Biologiýa</th>
+                    <th>Himiýa</th>
+                    <th>Matematika</th>
+                    <th>Fizika</th>
+                    <th>Zehin</th>
+                    {% if compare %}<th>Jemi</th>{% endif %}
+                    <th>Amaly</th>
                 </tr>
             </thead>
             <tbody>
@@ -179,26 +179,26 @@
                         <hr class="my-1">
                         <strong class="text-primary fs-6">{{ t.score }}</strong>
                         {% else %}
-                        <span class="text-muted fst-italic" style="font-size:0.75rem;">Нет ключа</span>
+                        <span class="text-muted fst-italic" style="font-size:0.75rem;">Açar ýok</span>
                         {% endif %}
                     </td>
                     {% endif %}
                     <td>
                         <form method="post" action="{{ url_for('delete', student_id=s.id) }}"
-                              onsubmit="return confirm('Удалить студента {{ s.student_number }}?')">
-                            <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                              onsubmit="return confirm('{{ s.student_number }} belgili talyby öçürmek?')">
+                            <button type="submit" class="btn btn-danger btn-sm">Öçürmek</button>
                         </form>
                     </td>
                 </tr>
                 {% else %}
                 <tr>
-                    <td colspan="{{ 22 if compare else 21 }}" class="text-center text-muted py-3">Нет данных. Загрузите файл.</td>
+                    <td colspan="{{ 22 if compare else 21 }}" class="text-center text-muted py-3">Maglumat ýok. Faýl ýükläň.</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
     </div>
 
-    <small class="text-muted">Всего студентов: {{ students | length }}</small>
+    <small class="text-muted">Jemi talyplar: {{ students | length }}</small>
 </div>
 {% endblock %}

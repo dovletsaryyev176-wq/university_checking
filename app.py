@@ -20,45 +20,45 @@ FIELDS = [
     ('direction3',     slice(43,  47)),
     ('direction4',     slice(47,  51)),
     ('turkmen',        slice(51,  71)),
-    ('english',        slice(71,  91)),
-    ('informatics',    slice(91,  106)),
-    ('history',        slice(106, 121)),
-    ('jemgyyet',       slice(121, 136)),
-    ('economics',      slice(136, 151)),
-    ('biology',        slice(151, 166)),
-    ('chemistry',      slice(166, 186)),
-    ('mathematics',    slice(186, 206)),
-    ('physics',        slice(206, 226)),
-    ('zehin',          slice(226, 241)),
+    ('english',        slice(71,  101)),
+    ('informatics',    slice(101, 116)),
+    ('history',        slice(116, 131)),
+    ('jemgyyet',       slice(131, 146)),
+    ('economics',      slice(146, 161)),
+    ('biology',        slice(161, 176)),
+    ('chemistry',      slice(176, 196)),
+    ('mathematics',    slice(196, 216)),
+    ('physics',        slice(216, 236)),
+    ('zehin',          slice(236, 251)),
 ]
 
 # Offsets of each subject within the flat answer key string
 SUBJECT_KEY_SLICES = [
     ('turkmen',     slice(0,   20)),
-    ('english',     slice(20,  40)),
-    ('informatics', slice(40,  55)),
-    ('history',     slice(55,  70)),
-    ('jemgyyet',    slice(70,  85)),
-    ('economics',   slice(85,  100)),
-    ('biology',     slice(100, 115)),
-    ('chemistry',   slice(115, 135)),
-    ('mathematics', slice(135, 155)),
-    ('physics',     slice(155, 175)),
-    ('zehin',       slice(175, 190)),
+    ('english',     slice(20,  50)),
+    ('informatics', slice(50,  65)),
+    ('history',     slice(65,  80)),
+    ('jemgyyet',    slice(80,  95)),
+    ('economics',   slice(95,  110)),
+    ('biology',     slice(110, 125)),
+    ('chemistry',   slice(125, 145)),
+    ('mathematics', slice(145, 165)),
+    ('physics',     slice(165, 185)),
+    ('zehin',       slice(185, 200)),
 ]
 
 SUBJECT_LABELS = {
-    'turkmen':     'Туркм. яз.',
-    'english':     'Английский',
-    'informatics': 'Информатика',
-    'history':     'История',
-    'jemgyyet':    'Джемгыет',
-    'economics':   'Экономика',
-    'biology':     'Биология',
-    'chemistry':   'Химия',
-    'mathematics': 'Математика',
-    'physics':     'Физика',
-    'zehin':       'Зехин',
+    'turkmen':     'Türkmen dili',
+    'english':     'Iňlis dili',
+    'informatics': 'Informatika',
+    'history':     'Taryh',
+    'jemgyyet':    'Jemgyýet',
+    'economics':   'Ykdysadyýet',
+    'biology':     'Biologiýa',
+    'chemistry':   'Himiýa',
+    'mathematics': 'Matematika',
+    'physics':     'Fizika',
+    'zehin':       'Zehin',
 }
 
 def parse_line(line):
@@ -122,7 +122,7 @@ def index():
 def upload():
     file = request.files.get('file')
     if not file or file.filename == '':
-        flash('Файл не выбран.', 'warning')
+        flash('Faýl saýlanmady.', 'warning')
         return redirect(url_for('index'))
 
     raw = file.read()
@@ -135,7 +135,7 @@ def upload():
     skipped = []
 
     for line in content.splitlines():
-        if len(line) < 241:
+        if len(line) < 251:
             continue
         student = parse_line(line)
         if not student['student_number']:
@@ -147,11 +147,11 @@ def upload():
             added += 1
 
     if added:
-        flash(f'Добавлено студентов: {added}', 'success')
+        flash(f'Goşulan talyplaryň sany: {added}', 'success')
     if skipped:
-        flash(f'Уже существуют (пропущены): {", ".join(skipped)}', 'warning')
+        flash(f'Eýýäm bar (geçildi): {", ".join(skipped)}', 'warning')
     if not added and not skipped:
-        flash('В файле не найдено подходящих строк.', 'danger')
+        flash('Faýlda laýyk setirler tapylmady.', 'danger')
 
     return redirect(url_for('index'))
 
@@ -159,12 +159,12 @@ def upload():
 def upload_key():
     book_type = request.form.get('book_type', '').strip().upper()
     if book_type not in ('A', 'B'):
-        flash('Неверный тип книги. Допустимы только A или B.', 'danger')
+        flash('Kitabyň görnüşi nädogry. Diňe A ýa-da B bolmalydyr.', 'danger')
         return redirect(url_for('index'))
 
     file = request.files.get('file')
     if not file or file.filename == '':
-        flash('Файл не выбран.', 'warning')
+        flash('Faýl saýlanmady.', 'warning')
         return redirect(url_for('index'))
 
     raw = file.read()
@@ -175,18 +175,18 @@ def upload_key():
 
     line = content.splitlines()[0].strip() if content.strip() else ''
     if not line or not all(c in 'ABCD' for c in line):
-        flash('Файл должен содержать строку из символов A, B, C, D.', 'danger')
+        flash('Faýl A, B, C, D simwollaryndan ybarat setir saklamalydyr.', 'danger')
         return redirect(url_for('index'))
 
     db.upsert_answer_key(book_type, line)
     db.delete_results_for_book_type(book_type)
-    flash(f'Ключ ответов для книги {book_type} сохранён. Старые результаты удалены.', 'success')
+    flash(f'{book_type} kitaby üçin jogap açary saklandy. Köne netijeler öçürildi.', 'success')
     return redirect(url_for('index'))
 
 @app.route('/delete/<int:student_id>', methods=['POST'])
 def delete(student_id):
     db.delete_student(student_id)
-    flash('Студент удалён.', 'success')
+    flash('Talyp öçürildi.', 'success')
     return redirect(url_for('index'))
 
 @app.route('/export')
@@ -197,7 +197,7 @@ def export():
 
     wb = Workbook()
     ws = wb.active
-    ws.title = 'Результаты'
+    ws.title = 'Netijeler'
 
     green  = PatternFill('solid', fgColor='C6EFCE')
     red    = PatternFill('solid', fgColor='FFC7CE')
@@ -206,18 +206,18 @@ def export():
     bold   = Font(bold=True)
     center = Alignment(horizontal='center', vertical='center', wrap_text=True)
 
-    INFO_COLS = ['№', 'Номер', 'Имя', 'Фамилия', 'Книга',
-                 'Напр.1', 'Напр.2', 'Напр.3', 'Напр.4']
+    INFO_COLS = ['№', 'Belgisi', 'Ady', 'Familiýasy', 'Kitap',
+                 'Ugur 1', 'Ugur 2', 'Ugur 3', 'Ugur 4']
     n_info = len(INFO_COLS)
 
     # Row 1: merged group headers
     ws.append(INFO_COLS + [SUBJECT_LABELS[s] for s in subjects for _ in range(3)]
-              + ['Итого', None, None, 'Балл'])
+              + ['Jemi', None, None, 'Bal'])
 
     # Row 2: sub-headers В / Н / #
     ws.append([''] * n_info
-              + ['В', 'Н', '#'] * len(subjects)
-              + ['В', 'Н', '#', ''])
+              + ['D', 'Ý', '#'] * len(subjects)
+              + ['D', 'Ý', '#', ''])
 
     # Merge info columns across rows 1-2
     for col in range(1, n_info + 1):
