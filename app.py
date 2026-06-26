@@ -115,6 +115,12 @@ def index():
                 cmp = compare_student(s, key_row['answers'])
                 comparison[s['id']] = cmp
                 db.upsert_result(s['id'], cmp)
+        # Sort by total score descending; students without a key go last
+        students = sorted(
+            students,
+            key=lambda s: comparison.get(s['id'], {}).get('_total', {}).get('score', float('-inf')),
+            reverse=True,
+        )
     return render_template('index.html', students=students, answer_keys=answer_keys,
                            compare=compare, comparison=comparison)
 

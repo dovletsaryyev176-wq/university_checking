@@ -1,0 +1,55 @@
+.university-banner {
+    background: linear-gradient(135deg, #0d3b66 0%, #1d5d9b 50%, #2a7ab0 100%);
+    color: #fff;
+    text-align: center;
+    padding: 1.5rem 1rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 6px 18px rgba(13, 59, 102, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.university-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.15), transparent 60%);
+    pointer-events: none;
+}
+
+.university-title {
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    font-size: clamp(1.1rem, 2.5vw, 2rem);
+    text-transform: uppercase;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    line-height: 1.3;
+}
+
+.university-subtitle {
+    margin-top: 0.5rem;
+    font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+    font-weight: 500;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+}
+
+.table-university th {
+    background: linear-gradient(135deg, #0d3b66 0%, #1d5d9b 100%);
+    color: #fff;
+    border-color: #1d5d9b;
+    font-weight: 600;
+    vertical-align: middle;
+}
+
+.university-subtitle::before,
+.university-subtitle::after {
+    content: "";
+    display: inline-block;
+    width: 40px;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.6);
+    vertical-align: middle;
+    margin: 0 0.75rem;
+}
